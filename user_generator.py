@@ -4,7 +4,7 @@ import time
 import requests
 from string import ascii_lowercase, ascii_uppercase
 import itertools
-import random 
+import random
 
 class User():
     def rand_password(alph_lower, alph_upper, special_chars, numbers):
@@ -53,17 +53,35 @@ class User():
         randomized_word_joined = list(itertools.chain.from_iterable(randomized_word(username)))
         return ''.join(char for char in randomized_word_joined)
 
+    def rand_name(name_list):
+        return name_list[random.randint(1,len(name_list)-1)]
+
+    def rand_surname(name_list):
+        return name_list[random.randint(1,len(name_list)-1)]
+
+
 def main():
-    url = 'https://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain'
-    r = requests.get(url)
-    word_list = r.text.split()
+    # url = 'https://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain'
+    # r = requests.get(url)
+    # word_list = []
+    # name_list = []
+    with open('words.txt', 'r') as words:
+        word_list = [word.strip() for word in words]
+    with open('namex.txt', 'r') as names:
+        name_list = [name.strip() for name in names]
     len_word_list = len(word_list)
     alph_lower, alph_upper = ascii_lowercase, ascii_uppercase
     special_chars = '!"#$%&\/\()*+,-./:;?@[]^_`{|}~'
     numbers = '0123456789'
-    username = User.rand_username(word_list, len_word_list, alph_lower, alph_upper, special_chars, numbers)
-    password = User.rand_password(alph_lower, alph_upper, special_chars, numbers)
-    return (username, password)
-print(main())
+    i = 0
+    with open('users.txt', 'w') as users:
+        for i in range(1,501):
+            username = User.rand_username(word_list, len_word_list, alph_lower, alph_upper, special_chars, numbers)
+            password = User.rand_password(alph_lower, alph_upper, special_chars, numbers)
+            name = User.rand_name(name_list)
+            surname = User.rand_surname(name_list)
+            users.write(f'{i}.  username: {username}\n    password:  {password}\n    name:  {name}\n    surname:  {surname}')
+            users.write('\n\n')
 
+main()
 
